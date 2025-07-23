@@ -99,7 +99,7 @@ with st.expander("🔎 多条件筛选/原始数据浏览"):
 # 6. 其他高级分析
 ##############################
 with st.expander("📈 高级分析"):
-    st.markdown("#### 微站出动用时分位数及中文解读")
+    st.markdown("#### 微站出动用时分位数")
     if '微站出动用时' in df.columns:
         used = pd.to_numeric(df['微站出动用时'], errors='coerce')
         # 数据清洗：仅保留0到500分钟内的用时
