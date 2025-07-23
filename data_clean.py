@@ -13,7 +13,7 @@ def format_dt_no_leading_zero(ts):
 
 def main():
     # 1. 读取原始 XLSX 文件
-    input_path = r'C:\Users\RAZER\OneDrive\桌面\vscode\浦东消防\data\每日火警详情.xlsx'
+    input_path = r'data\每日火警详情.xlsx'
     if not os.path.exists(input_path):
         raise FileNotFoundError(f"找不到输入文件：{input_path}")
     df = pd.read_excel(input_path)
@@ -105,7 +105,7 @@ def main():
         df['微站处置'] = df['微站处置'].apply(merge_jingjie)
 
     # 7. 保存为新的 CSV
-    output_path = r'C:\Users\RAZER\OneDrive\桌面\vscode\浦东消防\data\每日火警详情.csv'
+    output_path = r'data\每日火警详情.csv'
     df.to_csv(output_path, index=False, encoding='utf-8-sig')
     print(f"\n已导出清洗后 CSV：{output_path}\n")
 

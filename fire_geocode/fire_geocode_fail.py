@@ -4,7 +4,7 @@ import time
 from tqdm import tqdm
 
 # 读取文档
-df = pd.read_csv(r"C:\Users\RAZER\OneDrive\桌面\vscode\浦东消防\data\地址试案\火警地址.csv")  # 替换为实际路径
+df = pd.read_csv(r"data\地址试案\火警地址.csv")  # 替换为实际路径
 
 df['立案时间'] = pd.to_datetime(df['立案时间'])
 df['月份'] = df['立案时间'].dt.to_period('M')
@@ -52,5 +52,5 @@ print("处理完成！更新文件已保存。")
 
 # 失败日志
 failures = updated_df[updated_df['地理编码状态'].astype(str).str.contains("失败", na=False)]
-failures.to_csv(r"C:\Users\RAZER\OneDrive\桌面\vscode\浦东消防\data\地址试案\失败日志.csv", index=False, encoding="utf-8-sig")
+failures.to_csv(r"data\地址试案\失败日志.csv", index=False, encoding="utf-8-sig")
 print(f"仍有 {len(failures)} 条失败，已保存到失败日志.csv")

@@ -5,7 +5,7 @@ import plotly.express as px
 # ===== 数据加载与预处理 =====
 @st.cache_data
 def load_data():
-    df = pd.read_csv(r'C:\Users\34713\Desktop\vscode\浦东消防\data\每日火警详情.csv', encoding='utf-8')
+    df = pd.read_csv(r'data\每日火警详情.csv', encoding='utf-8')
     if df.columns[0].startswith('\ufeff'):  # 去除BOM
         df.columns = [col.replace('\ufeff', '') for col in df.columns]
     df['立案时间'] = pd.to_datetime(df['立案时间'])

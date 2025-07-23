@@ -6,7 +6,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 
 # 读取你的表格
-df = pd.read_csv(r"C:\Users\RAZER\OneDrive\桌面\vscode\浦东消防\data\每日火警详情.csv")
+df = pd.read_csv(r"data\每日火警详情.csv")
 
 # 定义清洗函数
 def clean_address(address):
@@ -82,5 +82,5 @@ with ThreadPoolExecutor(max_workers=3) as executor:
 out_df = pd.DataFrame(results)
 
 # 保存
-out_df.to_csv(r"C:\Users\RAZER\OneDrive\桌面\vscode\浦东消防\data\地址试案\火警地址.csv", index=False, encoding="utf-8-sig")
+out_df.to_csv(r"data\地址试案\火警地址.csv", index=False, encoding="utf-8-sig")
 print("OK 已导出为 火警地址_已地理编码.csv")

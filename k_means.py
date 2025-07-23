@@ -6,7 +6,7 @@ import plotly.express as px
 # ========== 数据加载 ==========
 @st.cache_data
 def load_data():
-    df = pd.read_csv(r"C:\Users\34713\Desktop\vscode\浦东消防\data\火警地址_已清洗.csv", encoding='utf-8')
+    df = pd.read_csv(r"data\火警地址_已清洗.csv", encoding='utf-8')
     if df.columns[0].startswith('\ufeff'):
         df.columns = [col.replace('\ufeff', '') for col in df.columns]
     return df
@@ -56,4 +56,4 @@ st.markdown("#### 下载聚类结果")
 st.info("如下载后用Excel打开出现中文乱码，请用Excel的“数据”->“自文本/CSV”导入，编码选择UTF-8。")
 
 # 保存一份到服务器本地
-df.to_csv(r"C:\Users\34713\Desktop\vscode\浦东消防\data\火警地址_KMeans聚类结果.csv", index=False, encoding='utf-8-sig')
+df.to_csv(r"data\火警地址_KMeans聚类结果.csv", index=False, encoding='utf-8-sig')

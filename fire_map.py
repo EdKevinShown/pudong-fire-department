@@ -16,8 +16,8 @@ st.title("浦东微站火警点空间分布与覆盖统计分析")
 
 @st.cache_data
 def load_data():
-    stations = pd.read_csv(r'C:\Users\RAZER\OneDrive\桌面\vscode\浦东消防\data\微站地址_已地理编码.csv', encoding='utf-8')
-    fires = pd.read_csv(r'C:\Users\RAZER\OneDrive\桌面\vscode\浦东消防\data\火警地址_已地理编码_已清洗.csv', encoding='utf-8')
+    stations = pd.read_csv(r'data\微站地址_已地理编码.csv', encoding='utf-8')
+    fires = pd.read_csv(r'data\火警地址_已地理编码_已清洗.csv', encoding='utf-8')
     if stations.columns[0].startswith('\ufeff'):
         stations.columns = [c.replace('\ufeff','') for c in stations.columns]
     if fires.columns[0].startswith('\ufeff'):

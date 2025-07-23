@@ -11,7 +11,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 import matplotlib.pyplot as plt
 
 # 1. 读取数据
-df = pd.read_csv(r'C:\Users\34713\Desktop\vscode\浦东消防\data\火警地址_KMeans聚类结果.csv', encoding='utf-8', parse_dates=['立案时间'])
+df = pd.read_csv(r'data\火警地址_KMeans聚类结果.csv', encoding='utf-8', parse_dates=['立案时间'])
 
 # 2. 类别特征编码
 for col in ['火警类型', '所属大队', '所属街道', '所属队站', '建筑物内/外']:
@@ -138,13 +138,13 @@ info = {
     "ROC-AUC": rocauc,
     "PR-AUC": prauc
 }
-pd.DataFrame([info]).to_csv(r'C:\Users\34713\Desktop\vscode\浦东消防\data\fire_model_info.csv', index=False, encoding='utf-8-sig')
-np.savetxt(r'C:\Users\34713\Desktop\vscode\浦东消防\data\fire_confusion_matrix.csv', cmatrix, delimiter=',', fmt='%d')
+pd.DataFrame([info]).to_csv(r'data\fire_model_info.csv', index=False, encoding='utf-8-sig')
+np.savetxt(r'data\fire_confusion_matrix.csv', cmatrix, delimiter=',', fmt='%d')
 
 # 保存特征重要性（如果有）
 if hasattr(model, 'feature_importances_'):
     fi = pd.Series(model.feature_importances_, index=feature_cols).sort_values(ascending=False)
-    fi.to_csv(r'C:\Users\34713\Desktop\vscode\浦东消防\data\fire_feature_importance.csv', encoding='utf-8-sig')
+    fi.to_csv(r'data\fire_feature_importance.csv', encoding='utf-8-sig')
 
 # 实时显示ROC/PR曲线，不再保存为文件
 fpr, tpr, _ = roc_curve(y_test, y_proba)
@@ -186,7 +186,7 @@ cols_to_save = [
 ]
 result_df = result_df.rename(columns=rename_dict)
 result_df = result_df[[c for c in cols_to_save if c in result_df.columns]]
-result_df.to_csv(r'C:\Users\34713\Desktop\vscode\浦东消防\data\fire_pred_result_cn.csv', encoding='utf-8-sig', index=False)
+result_df.to_csv(r'data\fire_pred_result_cn.csv', encoding='utf-8-sig', index=False)
 
 print('已输出模型评估信息、混淆矩阵、特征重要性、ROC和PR曲线、全中文表头预测结果。')
 
@@ -222,5 +222,5 @@ future_rename_dict = {
 }
 future_df = future_df.rename(columns=future_rename_dict)
 future_df = future_df[[c for c in ['日期','经度网格','纬度网格','小时','月份','星期几','预测有火警概率'] if c in future_df.columns]]
-future_df.to_csv(r'C:\Users\34713\Desktop\vscode\浦东消防\data\fire_pred_next7days_cn.csv', encoding='utf-8-sig', index=False)
+future_df.to_csv(r'data\fire_pred_next7days_cn.csv', encoding='utf-8-sig', index=False)
 print('已输出未来7天全网格火警概率预测：fire_pred_next7days_cn.csv')

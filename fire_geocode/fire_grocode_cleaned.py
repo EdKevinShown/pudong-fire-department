@@ -1,9 +1,9 @@
 import pandas as pd
 
 # 输入文件路径
-input_file = r"C:\Users\RAZER\OneDrive\桌面\vscode\浦东消防\data\地址试案\火警地址(1).csv"
+input_file = r"data\地址试案\火警地址(1).csv"
 # 输出文件路径
-output_file = r"C:\Users\RAZER\OneDrive\桌面\vscode\浦东消防\data\火警地址_已清洗.csv"
+output_file = r"data\火警地址_已清洗.csv"
 
 # 读取CSV，指定编码防止中文乱码
 df = pd.read_csv(input_file, encoding='utf-8-sig')
