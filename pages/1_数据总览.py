@@ -16,7 +16,7 @@ def load_data():
 df = load_data()
 
 st.set_page_config("每日火警数据分析", layout="wide")
-st.title("🔥 每日火警数据分析看板")
+st.title("每日火警数据分析看板")
 
 ##############################
 # 1. 数据总览
@@ -96,9 +96,9 @@ with st.expander("🔎 多条件筛选/原始数据浏览"):
     st.dataframe(df_view, use_container_width=True, height=400)
 
 ##############################
-# 6. 其他高级分析（可扩展）
+# 6. 其他高级分析
 ##############################
-with st.expander("📈 高级分析（可选）"):
+with st.expander("📈 高级分析"):
     st.markdown("#### 微站出动用时分位数及中文解读")
     if '微站出动用时' in df.columns:
         used = pd.to_numeric(df['微站出动用时'], errors='coerce')
@@ -125,24 +125,6 @@ with st.expander("📈 高级分析（可选）"):
     else:
         st.info("无微站出动用时字段")
 
-    # 微站失效率分析
-    st.markdown("#### 微站失效率分析")
-    if '微站出动用时' in df.columns and '中队出动用时' in df.columns:
-        ws_time = pd.to_numeric(df['微站出动用时'], errors='coerce')
-        zd_time = pd.to_numeric(df['中队出动用时'], errors='coerce')
-        # 只统计合理区间的数据
-        valid_mask = ws_time.notna() & zd_time.notna() & (ws_time >= 0) & (ws_time <= 500) & (zd_time >= 0) & (zd_time <= 500)
-        ws_slower_count = (ws_time[valid_mask] > zd_time[valid_mask]).sum()
-        total_count = valid_mask.sum()
-        fail_percent = ws_slower_count / total_count * 100 if total_count > 0 else 0
-
-        st.write(f"在有 {total_count} 条可比数据中，微站比中队慢的有 {ws_slower_count} 条，占比 {fail_percent:.2f}%。")
-        if fail_percent > 10:
-            st.warning("注意：有超过10%的警情中，微站响应不如中队，建议关注微站作用发挥情况。")
-        else:
-            st.success(f"微站响应整体良好，失效率仅 {fail_percent:.2f}%。")
-    else:
-        st.info("（缺少'微站出动用时'或'中队出动用时'字段，无法进行失效分析。）")
-
+    
 st.markdown("---")
 st.caption("© 2025 火警数据分析 | Streamlit前端交互可视化 | 建议用 streamlit run project.py 启动，无需任何自动打开浏览器代码")
