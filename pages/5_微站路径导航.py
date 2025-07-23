@@ -16,29 +16,24 @@ def load_station_data():
     return df[['所属微站', '微站地址_纬度', '微站地址_经度']]
 
 def gcj02_to_wgs84(lng, lat):
-    # 坐标转换辅助函数
     def transformLat(x, y):
         ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * math.sqrt(abs(x))
         ret += (20.0 * math.sin(6.0 * x * math.pi) + 20.0 * math.sin(2.0 * x * math.pi)) * 2.0 / 3.0
         ret += (20.0 * math.sin(y * math.pi) + 40.0 * math.sin(y / 3.0 * math.pi)) * 2.0 / 3.0
         ret += (160.0 * math.sin(y / 12.0 * math.pi) + 320 * math.sin(y * math.pi / 30.0)) * 2.0 / 3.0
         return ret
-
     def transformLng(x, y):
         ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * math.sqrt(abs(x))
         ret += (20.0 * math.sin(6.0 * x * math.pi) + 20.0 * math.sin(2.0 * x * math.pi)) * 2.0 / 3.0
         ret += (20.0 * math.sin(x * math.pi) + 40.0 * math.sin(x / 3.0 * math.pi)) * 2.0 / 3.0
         ret += (150.0 * math.sin(x / 12.0 * math.pi) + 300.0 * math.sin(x / 30.0 * math.pi)) * 2.0 / 3.0
         return ret
-
     def outOfChina(lng, lat):
         return not (73.66 < lng < 135.05 and 3.86 < lat < 53.55)
-
     if outOfChina(lng, lat):
         return lng, lat
-
-    a = 6378245.0  # 长半轴
-    ee = 0.00669342162296594323  # 偏心率平方
+    a = 6378245.0
+    ee = 0.00669342162296594323
     dLat = transformLat(lng - 105.0, lat - 35.0)
     dLng = transformLng(lng - 105.0, lat - 35.0)
     radLat = lat / 180.0 * math.pi
@@ -69,8 +64,8 @@ if "route_points" not in st.session_state:
     st.session_state["route_points"] = None
 if "route_info" not in st.session_state:
     st.session_state["route_info"] = None
-if "route_debug" not in st.session_state:
-    st.session_state["route_debug"] = None
+if "road_list" not in st.session_state:
+    st.session_state["road_list"] = []
 
 if st.button("🚀 计算并显示路径"):
     route_url = (
@@ -78,7 +73,7 @@ if st.button("🚀 计算并显示路径"):
         f"origin={start_lng},{start_lat}&destination={end_lng},{end_lat}&key={API_KEY}"
     )
     res = requests.get(route_url).json()
-    st.session_state["route_debug"] = res
+    st.session_state["road_list"] = []
 
     if res.get('status') == '1' and res.get('route', {}).get('paths'):
         steps = res['route']['paths'][0]['steps']
@@ -87,7 +82,11 @@ if st.button("🚀 计算并显示路径"):
         st.session_state["route_info"] = f"✔️ 路径成功：全程约 {distance} 米，预计 {duration} 分钟"
 
         all_points = []
+        roads = []
         for step in steps:
+            road = step.get('road', '')
+            if road:
+                roads.append(road)
             polyline = step.get('polyline', '')
             if polyline:
                 for pair in polyline.split(';'):
@@ -95,13 +94,16 @@ if st.button("🚀 计算并显示路径"):
                         lng, lat = pair.split(',')
                         lng, lat = float(lng), float(lat)
                         wgs_lng, wgs_lat = gcj02_to_wgs84(lng, lat)
-                        all_points.append([wgs_lat, wgs_lng])  # folium经纬度顺序是[纬度, 经度]
+                        all_points.append([wgs_lat, wgs_lng])
                     except:
                         continue
         st.session_state["route_points"] = all_points
+        # 合并连续重复路名
+        st.session_state["road_list"] = [r for i, r in enumerate(roads) if i == 0 or r != roads[i-1]]
     else:
         st.session_state["route_points"] = None
         st.session_state["route_info"] = "❌ 路径计算失败，请检查坐标或 API Key 是否正确。"
+        st.session_state["road_list"] = []
 
 center_lng, center_lat = gcj02_to_wgs84((start_lng + float(end_lng)) / 2, (start_lat + float(end_lat)) / 2)
 m = folium.Map(
@@ -124,7 +126,9 @@ st_folium(m, width=850, height=600)
 if st.session_state["route_info"]:
     st.info(st.session_state["route_info"])
 
-with st.expander("🔎 查看高德API返回数据（调试用）"):
-    st.json(st.session_state["route_debug"])
+if st.session_state["road_list"]:
+    st.success("途径道路：")
+    for idx, road in enumerate(st.session_state["road_list"], 1):
+        st.write(f"{idx}. {road}")
 
 st.caption("© 2025 导航 · OSM底图 · 路名整洁标签美观显示")

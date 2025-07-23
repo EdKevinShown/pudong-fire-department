@@ -14,7 +14,7 @@ def load_data():
 df = load_data()
 
 st.set_page_config("火警地址空间聚类", layout="wide")
-st.title("📍 火警地址KMeans空间聚类分析")
+st.title("火警地址KMeans空间聚类分析")
 
 # ========== 选择聚类数 ==========
 st.sidebar.markdown("## KMeans聚类参数")
